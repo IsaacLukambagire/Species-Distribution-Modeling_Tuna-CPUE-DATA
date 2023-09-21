@@ -159,104 +159,106 @@ Attaching package: 'nlme'</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">i_am</span>(<span class="st">"individual_files/sudheera/GAM_YFT_AS.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">i_am</span>(<span class="st">"individual_files/sudheera/GAM_YFT_AS.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>here() starts at /home/jovyan/ihw23_proj_tuna</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#dir_data &lt;- here::here("Data/")</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>tdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"~/ihw23_proj_tuna/Data/train data final.csv"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>tdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"~/ihw23_proj_tuna/Data/traindata_geo.csv"</span>)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    ln_cpue    sss  mld      zsd  ssh    sst      zeu      oxy        chl
-1 0.1728428 35.685 31.4 40.84834 42.7 29.238 64.87961 197.6131 0.08995789
-2 0.1823216 35.318 24.8 40.31239 41.1 28.814 73.39469 197.5258 0.08994923
-3 0.1823216 35.845 23.5 37.02136 29.8 29.091 64.41819 199.9046 0.08017466
-4 0.2623643 35.995 22.0 40.31192 39.1 29.475 73.43695 197.6867 0.09123552
-5 0.4054651 35.492 28.8 10.14131 27.0 27.332 36.84305 204.7976 0.40995532
-6 0.2876821 35.244 20.7 39.52658 36.0 29.796 70.71070 200.3283 0.09106820
-       eke
-1 0.015700
-2 0.012357
-3 0.190633
-4 0.017090
-5 0.072298
-6 0.231850</code></pre>
+<pre><code>   lat   lon      fdate mean_cpue sum_KG    sss  mld      zsd        ssc  ssh
+1 7.00 65.25 01-01-2016 0.1886792    100 35.685 31.4 40.84834 0.10479715 42.7
+2 9.50 68.75 08-01-2016 0.2000000     40 35.318 24.8 40.31239 0.10793079 41.1
+3 9.25 68.75 13-01-2016 0.1000000     71 36.011 25.0 40.76521 0.09815005 41.0
+4 2.00 63.25 16-01-2016 0.5000000    250 34.980 12.8       NA         NA 33.1
+5 2.75 68.50 16-01-2016 0.2000000     80 35.845 23.5 37.02136 0.11574023 29.8
+6 9.00 68.75 16-01-2016 0.3000000     98 35.995 22.0 40.31192 0.09516161 39.1
+     sst      u      v year      zeu      oxy        chl      eke    ln_cpue
+1 29.238  0.166  0.062 2016 64.87961 197.6131 0.08995789 0.015700 0.17284281
+2 28.814 -0.117  0.105 2016 73.39469 197.5258 0.08994923 0.012357 0.18232156
+3 29.431 -0.066  0.224 2016 70.18844 197.7541 0.08970544 0.027266 0.09531018
+4 28.460 -0.549 -0.215 2016 61.93364 204.2679 0.10696999 0.173813 0.40546511
+5 29.091 -0.571 -0.235 2016 64.41819 199.9046 0.08017466 0.190633 0.18232156
+6 29.475  0.018  0.184 2016 73.43695 197.6867 0.09123552 0.017090 0.26236426</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(tdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4739   10</code></pre>
+<pre><code>[1] 5727   19</code></pre>
 </div>
 </div>
 <p>Apply ANOVA test</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(tdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] "ln_cpue" "sss"     "mld"     "zsd"     "ssh"     "sst"     "zeu"    
- [8] "oxy"     "chl"     "eke"    </code></pre>
+<pre><code> [1] "lat"       "lon"       "fdate"     "mean_cpue" "sum_KG"    "sss"      
+ [7] "mld"       "zsd"       "ssc"       "ssh"       "sst"       "u"        
+[13] "v"         "year"      "zeu"       "oxy"       "chl"       "eke"      
+[19] "ln_cpue"  </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ANOVA for cpue (cpue ~sst, chl,ssh)</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>fit1<span class="ot">&lt;-</span> <span class="fu">aov</span>(ln_cpue<span class="sc">~</span><span class="fu">factor</span>(sst), <span class="at">data=</span>tdata)</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Df Sum Sq Mean Sq F value   Pr(&gt;F)    
-factor(sst) 2455  278.8  0.1136   1.149 0.000363 ***
-Residuals   2283  225.6  0.0988                     
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)  
+factor(sst) 2681  427.4  0.1594   1.052 0.0858 .
+Residuals   3045  461.2  0.1515                 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">aov</span>(ln_cpue<span class="sc">~</span><span class="fu">factor</span>(ssh), <span class="at">data=</span>tdata)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Df Sum Sq Mean Sq F value  Pr(&gt;F)   
-factor(ssh)  415   51.8  0.1247   1.191 0.00646 **
-Residuals   4323  452.6  0.1047                   
+<pre><code>              Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+factor(ssh)  423   81.3  0.1922   1.262 0.000352 ***
+Residuals   5303  807.4  0.1522                     
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">aov</span>(ln_cpue<span class="sc">~</span><span class="fu">factor</span>(sss), <span class="at">data=</span>tdata)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-factor(sss) 2010  232.3 0.11555   1.159 0.00019 ***
-Residuals   2728  272.1 0.09974                    
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)  
+factor(sss) 2171  351.1  0.1618    1.07 0.0394 *
+Residuals   3555  537.5  0.1512                 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>fit4 <span class="ot">&lt;-</span> <span class="fu">aov</span>(ln_cpue<span class="sc">~</span><span class="fu">factor</span>(mld), <span class="at">data=</span>tdata)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)  
-factor(mld) 1132  126.7  0.1120   1.069   0.08 .
-Residuals   3606  377.6  0.1047                 
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)
+factor(mld)  917  142.3  0.1552       1  0.498
+Residuals   4809  746.4  0.1552               </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>fit5 <span class="ot">&lt;-</span> <span class="fu">aov</span>(ln_cpue<span class="sc">~</span><span class="fu">factor</span>(zeu), <span class="at">data=</span>tdata)</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              Df Sum Sq Mean Sq F value  Pr(&gt;F)   
-factor(zeu) 3846  419.8 0.10915   1.151 0.00427 **
-Residuals    892   84.6 0.09481                   
+factor(zeu) 4435  709.2  0.1599    1.15 0.00102 **
+Residuals   1291  179.5  0.1390                   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>fit6 <span class="ot">&lt;-</span> <span class="fu">aov</span>(ln_cpue<span class="sc">~</span><span class="fu">factor</span>(eke), <span class="at">data=</span>tdata)</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)  
-factor(eke) 4307  464.7 0.10791   1.174 0.0146 *
-Residuals    431   39.6 0.09189                 
+<pre><code>              Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+factor(eke) 5148  810.5  0.1574   1.164 0.00869 **
+Residuals    578   78.2  0.1353                   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>fit7 <span class="ot">&lt;-</span> <span class="fu">aov</span>(ln_cpue<span class="sc">~</span><span class="fu">factor</span>(oxy), <span class="at">data=</span>tdata)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)  
-factor(oxy) 4543  488.0 0.10743   1.284 0.0108 *
-Residuals    195   16.3 0.08364                 
+<pre><code>              Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+factor(oxy) 5453  862.3 0.15813   1.635 1.08e-07 ***
+Residuals    273   26.4 0.09674                     
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -264,16 +266,27 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              Df Sum Sq Mean Sq F value   Pr(&gt;F)    
-factor(chl) 4568  492.0 0.10771   1.482 0.000448 ***
-Residuals    170   12.4 0.07267                     
+factor(chl) 5492  867.5  0.1580   1.745 3.28e-08 ***
+Residuals    234   21.2  0.0905                     
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>fit9 <span class="ot">&lt;-</span> <span class="fu">aov</span>(ln_cpue<span class="sc">~</span><span class="fu">factor</span>(zsd), <span class="at">data=</span>tdata)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)    
+factor(zsd) 3987  696.3 0.17464   1.822 &lt;2e-16 ***
+Residuals    863   82.7 0.09587                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+876 observations deleted due to missingness</code></pre>
 </div>
+</div>
+<p>SSH, OXY,CHL, ZD significant at 0.001 level. ZEU and EKE significant at 0.01 level. SSS significant at 0.01 level. MLD and SST are not significant.</p>
 <p>GAM</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>mod_lm <span class="ot">&lt;-</span> <span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(sst), <span class="at">data=</span>tdata)</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>mod_lm <span class="ot">&lt;-</span> <span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(sst), <span class="at">data=</span>tdata)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -284,20 +297,20 @@ ln_cpue ~ s(sst)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004672   109.5   &lt;2e-16 ***
+(Intercept) 0.537493   0.005143   104.5   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
          edf Ref.df     F p-value    
-s(sst) 4.989  6.129 22.64  &lt;2e-16 ***
+s(sst) 6.447  7.619 18.71  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0282   Deviance explained = 2.92%
-GCV = 0.10358  Scale est. = 0.10345   n = 4739</code></pre>
+R-sq.(adj) =  0.024   Deviance explained = 2.51%
+GCV = 0.15167  Scale est. = 0.15147   n = 5727</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -305,26 +318,24 @@ GCV = 0.10358  Scale est. = 0.10345   n = 4739</code></pre>
 <pre><code>
 Method: GCV   Optimizer: magic
 Smoothing parameter selection converged after 4 iterations.
-The RMS GCV score gradient at convergence was 3.17994e-07 .
+The RMS GCV score gradient at convergence was 2.372054e-07 .
 The Hessian was positive definite.
 Model rank =  10 / 10 
 
 Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
-         k'  edf k-index p-value  
-s(sst) 9.00 4.99    0.98   0.085 .
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+         k'  edf k-index p-value
+s(sst) 9.00 6.45       1    0.58</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>mod_lm2 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(sss), <span class="at">data=</span>tdata)</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>mod_lm2 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(sss), <span class="at">data=</span>tdata)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -335,47 +346,45 @@ ln_cpue ~ s(sss)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004675   109.5   &lt;2e-16 ***
+(Intercept) 0.537493   0.005146   104.5   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
          edf Ref.df     F p-value    
-s(sss) 8.498   8.93 15.42  &lt;2e-16 ***
+s(sss) 8.615  8.958 15.43  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0271   Deviance explained = 2.88%
-GCV = 0.10378  Scale est. = 0.10357   n = 4739</code></pre>
+R-sq.(adj) =  0.023   Deviance explained = 2.45%
+GCV = 0.15189  Scale est. = 0.15163   n = 5727</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 7 iterations.
-The RMS GCV score gradient at convergence was 7.940525e-07 .
+Smoothing parameter selection converged after 6 iterations.
+The RMS GCV score gradient at convergence was 4.74755e-07 .
 The Hessian was positive definite.
 Model rank =  10 / 10 
 
 Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
-        k' edf k-index p-value  
-s(sss) 9.0 8.5    0.97   0.035 *
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+         k'  edf k-index p-value
+s(sss) 9.00 8.61    1.01    0.79</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>mod_lm3 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(ssh), <span class="at">data=</span>tdata)</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>mod_lm3 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(ssh), <span class="at">data=</span>tdata)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -386,47 +395,45 @@ ln_cpue ~ s(ssh)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)   0.5117     0.0047   108.9   &lt;2e-16 ***
+(Intercept) 0.537493   0.005156   104.2   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
          edf Ref.df     F p-value    
-s(ssh) 6.128  7.266 11.39  &lt;2e-16 ***
+s(ssh) 7.276  8.233 13.92  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0166   Deviance explained = 1.78%
-GCV = 0.10484  Scale est. = 0.10469   n = 4739</code></pre>
+R-sq.(adj) =  0.0188   Deviance explained = 2.01%
+GCV = 0.1525  Scale est. = 0.15228   n = 5727</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 5 iterations.
-The RMS GCV score gradient at convergence was 1.673118e-07 .
+Smoothing parameter selection converged after 6 iterations.
+The RMS GCV score gradient at convergence was 6.934257e-08 .
 The Hessian was positive definite.
 Model rank =  10 / 10 
 
 Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
-         k'  edf k-index p-value    
-s(ssh) 9.00 6.13    0.91  &lt;2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+         k'  edf k-index p-value
+s(ssh) 9.00 7.28    1.01    0.71</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>mod_lm4 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(chl), <span class="at">data=</span>tdata)</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>mod_lm4 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(chl), <span class="at">data=</span>tdata)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -437,28 +444,28 @@ ln_cpue ~ s(chl)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004709   108.7   &lt;2e-16 ***
+(Intercept)  0.53749    0.00518   103.8   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
          edf Ref.df     F p-value    
-s(chl) 7.195  8.222 7.513  &lt;2e-16 ***
+s(chl) 8.215  8.799 7.103  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0126   Deviance explained = 1.41%
-GCV = 0.10529  Scale est. = 0.1051    n = 4739</code></pre>
+R-sq.(adj) =   0.01   Deviance explained = 1.14%
+GCV = 0.15389  Scale est. = 0.15365   n = 5727</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 5 iterations.
-The RMS GCV score gradient at convergence was 7.300175e-07 .
+Smoothing parameter selection converged after 8 iterations.
+The RMS GCV score gradient at convergence was 2.646983e-07 .
 The Hessian was positive definite.
 Model rank =  10 / 10 
 
@@ -466,16 +473,16 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
          k'  edf k-index p-value
-s(chl) 9.00 7.19       1    0.49</code></pre>
+s(chl) 9.00 8.21       1    0.69</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>mod_lm5 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(eke), <span class="at">data=</span>tdata)</span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>mod_lm5 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(eke), <span class="at">data=</span>tdata)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -486,45 +493,45 @@ ln_cpue ~ s(eke)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004734   108.1   &lt;2e-16 ***
+(Intercept) 0.537493   0.005204   103.3   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
-         edf Ref.df     F p-value  
-s(eke) 6.117  7.287 1.714  0.0962 .
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+         edf Ref.df     F p-value
+s(eke) 2.094  2.655 1.213   0.266
 
-R-sq.(adj) =  0.00212   Deviance explained = 0.341%
-GCV = 0.10638  Scale est. = 0.10622   n = 4739</code></pre>
+R-sq.(adj) =  0.000511   Deviance explained = 0.0877%
+GCV = 0.1552  Scale est. = 0.15512   n = 5727</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 4 iterations.
-The RMS GCV score gradient at convergence was 5.312209e-07 .
+Smoothing parameter selection converged after 6 iterations.
+The RMS GCV score gradient at convergence was 7.60241e-07 .
 The Hessian was positive definite.
 Model rank =  10 / 10 
 
 Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
-         k'  edf k-index p-value
-s(eke) 9.00 6.12    0.99    0.19</code></pre>
+         k'  edf k-index p-value  
+s(eke) 9.00 2.09    0.98   0.035 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>mod_lm6 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(oxy), <span class="at">data=</span>tdata)</span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>mod_lm6 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(oxy), <span class="at">data=</span>tdata)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -535,47 +542,45 @@ ln_cpue ~ s(oxy)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004622   110.7   &lt;2e-16 ***
+(Intercept) 0.537493   0.005035   106.8   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
-         edf Ref.df     F p-value    
-s(oxy) 7.238  8.279 29.58  &lt;2e-16 ***
+         edf Ref.df    F p-value    
+s(oxy) 8.015  8.753 45.3  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0488   Deviance explained = 5.03%
-GCV = 0.10143  Scale est. = 0.10125   n = 4739</code></pre>
+R-sq.(adj) =  0.0646   Deviance explained = 6.59%
+GCV = 0.1454  Scale est. = 0.14517   n = 5727</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 6 iterations.
-The RMS GCV score gradient at convergence was 1.341667e-06 .
+Smoothing parameter selection converged after 7 iterations.
+The RMS GCV score gradient at convergence was 3.950791e-07 .
 The Hessian was positive definite.
 Model rank =  10 / 10 
 
 Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
-         k'  edf k-index p-value  
-s(oxy) 9.00 7.24    0.98   0.055 .
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+         k'  edf k-index p-value
+s(oxy) 9.00 8.02    0.98    0.11</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>mod_lm7 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zeu), <span class="at">data=</span>tdata)</span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>mod_lm7 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zeu), <span class="at">data=</span>tdata)</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -586,47 +591,47 @@ ln_cpue ~ s(zeu)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004652     110   &lt;2e-16 ***
+(Intercept) 0.537493   0.005144   104.5   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
          edf Ref.df     F p-value    
-s(zeu) 7.762  8.622 21.41  &lt;2e-16 ***
+s(zeu) 8.103  8.791 16.56  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0366   Deviance explained = 3.82%
-GCV = 0.10274  Scale est. = 0.10255   n = 4739</code></pre>
+R-sq.(adj) =  0.0237   Deviance explained = 2.51%
+GCV = 0.15176  Scale est. = 0.15152   n = 5727</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 7 iterations.
-The RMS GCV score gradient at convergence was 3.936792e-07 .
+Smoothing parameter selection converged after 5 iterations.
+The RMS GCV score gradient at convergence was 3.809511e-07 .
 The Hessian was positive definite.
 Model rank =  10 / 10 
 
 Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
-         k'  edf k-index p-value    
-s(zeu) 9.00 7.76    0.95  &lt;2e-16 ***
+        k' edf k-index p-value    
+s(zeu) 9.0 8.1    0.96  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>mod_lm8 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd), <span class="at">data=</span>tdata)</span>
-<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>mod_lm8 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd), <span class="at">data=</span>tdata)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -637,20 +642,20 @@ ln_cpue ~ s(zsd)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004586   111.6   &lt;2e-16 ***
+(Intercept) 0.550784   0.005576   98.78   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
          edf Ref.df     F p-value    
-s(zsd) 5.199  6.381 50.68  &lt;2e-16 ***
+s(zsd) 5.856  7.054 44.65  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0637   Deviance explained = 6.47%
-GCV = 0.0998  Scale est. = 0.099669  n = 4739</code></pre>
+R-sq.(adj) =  0.061   Deviance explained = 6.22%
+GCV = 0.15103  Scale est. = 0.15082   n = 4851</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -658,26 +663,26 @@ GCV = 0.0998  Scale est. = 0.099669  n = 4739</code></pre>
 <pre><code>
 Method: GCV   Optimizer: magic
 Smoothing parameter selection converged after 5 iterations.
-The RMS GCV score gradient at convergence was 4.439544e-07 .
+The RMS GCV score gradient at convergence was 1.848971e-06 .
 The Hessian was positive definite.
 Model rank =  10 / 10 
 
 Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
-        k' edf k-index p-value    
-s(zsd) 9.0 5.2    0.93  &lt;2e-16 ***
+         k'  edf k-index p-value    
+s(zsd) 9.00 5.86    0.91  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>mod_lm9 <span class="ot">&lt;-</span> <span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(mld), <span class="at">data=</span>tdata)</span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>mod_lm9 <span class="ot">&lt;-</span> <span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(mld), <span class="at">data=</span>tdata)</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lm9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -688,20 +693,20 @@ ln_cpue ~ s(mld)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004725   108.3   &lt;2e-16 ***
+(Intercept) 0.537493   0.005192   103.5   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
-        edf Ref.df     F  p-value    
-s(mld) 6.78  7.881 4.104 8.13e-05 ***
+        edf Ref.df     F p-value    
+s(mld) 7.66  8.526 3.934   8e-05 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.00622   Deviance explained = 0.764%
-GCV = 0.10596  Scale est. = 0.10579   n = 4739</code></pre>
+R-sq.(adj) =  0.00533   Deviance explained = 0.666%
+GCV = 0.15461  Scale est. = 0.15437   n = 5727</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_lm9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -709,19 +714,19 @@ GCV = 0.10596  Scale est. = 0.10579   n = 4739</code></pre>
 <pre><code>
 Method: GCV   Optimizer: magic
 Smoothing parameter selection converged after 7 iterations.
-The RMS GCV score gradient at convergence was 1.614426e-06 .
+The RMS GCV score gradient at convergence was 2.580184e-07 .
 The Hessian was positive definite.
 Model rank =  10 / 10 
 
 Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
-         k'  edf k-index p-value    
-s(mld) 9.00 6.78    0.94  &lt;2e-16 ***
+         k'  edf k-index p-value  
+s(mld) 9.00 7.66    0.98    0.08 .
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_lm9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -729,10 +734,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Summery of the result</p>
 <table class="table">
 <colgroup>
-<col style="width: 37%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 27%">
+<col style="width: 41%">
+<col style="width: 10%">
+<col style="width: 17%">
+<col style="width: 29%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -744,58 +749,58 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>ZSD (Secchi depth -Duran alg)</td>
-<td>0.0998</td>
-<td>0.0637</td>
-<td>6.47</td>
+<td>OXY (Oxygen at surface)</td>
+<td>0.1454</td>
+<td>0.0646</td>
+<td>6.59</td>
 </tr>
 <tr class="even">
-<td>OXY (Oxygen at surface)</td>
-<td>0.10143</td>
-<td>0.0488</td>
-<td>5.03</td>
+<td>ZSD (Secchi depth -Duran alg)</td>
+<td>0.151</td>
+<td>0.061</td>
+<td>6.22</td>
 </tr>
 <tr class="odd">
 <td>ZEU (Euphotic depth)</td>
-<td>0.10274</td>
-<td>0.0366</td>
-<td>3.82</td>
+<td>0.1516</td>
+<td>0.0237</td>
+<td>2.51</td>
 </tr>
 <tr class="even">
 <td>SST</td>
-<td>0.10358</td>
-<td>0.0282</td>
-<td>2.92</td>
+<td>0.1516</td>
+<td>0.024</td>
+<td>2.51</td>
 </tr>
 <tr class="odd">
 <td>SSS</td>
-<td>0.10378</td>
-<td>0.103</td>
-<td>2.88</td>
+<td>0.1518</td>
+<td>0.023</td>
+<td>2.45</td>
 </tr>
 <tr class="even">
 <td>SSH</td>
-<td>0.10484</td>
-<td>0.0166</td>
-<td>1.786</td>
+<td>0.1525</td>
+<td>0.0188</td>
+<td>2.01</td>
 </tr>
 <tr class="odd">
 <td>CHL</td>
-<td>0.10484</td>
-<td>0.0126</td>
-<td>1.41</td>
+<td>0.1538</td>
+<td>0.01</td>
+<td>1.44</td>
 </tr>
 <tr class="even">
 <td>MLD</td>
-<td>0.10596</td>
-<td>0.00622</td>
-<td>0.76</td>
+<td>0.154</td>
+<td>0.0053</td>
+<td>0.666</td>
 </tr>
 <tr class="odd">
 <td>EKE</td>
-<td>0.0998</td>
-<td>0.10638</td>
-<td>0.341</td>
+<td>0.0155</td>
+<td>0.005</td>
+<td>0.088</td>
 </tr>
 </tbody>
 </table>
@@ -803,8 +808,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h2 class="anchored" data-anchor-id="gam-with-multiple-variables">GAM with multiple variables</h2>
 <p>2 variables (Secchi depth and Oxygen level)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>mod_gam1 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy), <span class="at">data=</span>tdata)</span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>mod_gam1 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy), <span class="at">data=</span>tdata)</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -815,29 +820,29 @@ ln_cpue ~ s(zsd) + s(oxy)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004535   112.8   &lt;2e-16 ***
+(Intercept) 0.550784   0.005493   100.3   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
          edf Ref.df     F p-value    
-s(zsd) 6.233  7.426 25.11  &lt;2e-16 ***
-s(oxy) 7.280  8.309 12.92  &lt;2e-16 ***
+s(zsd) 5.930  7.130 25.13  &lt;2e-16 ***
+s(oxy) 7.955  8.723 17.13  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0844   Deviance explained =  8.7%
-GCV = 0.09776  Scale est. = 0.097461  n = 4739</code></pre>
+R-sq.(adj) =  0.0888   Deviance explained = 9.14%
+GCV = 0.14682  Scale est. = 0.14636   n = 4851</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 6 iterations.
-The RMS GCV score gradient at convergence was 1.331482e-06 .
+Smoothing parameter selection converged after 8 iterations.
+The RMS GCV score gradient at convergence was 3.356933e-07 .
 The Hessian was positive definite.
 Model rank =  19 / 19 
 
@@ -845,12 +850,12 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
          k'  edf k-index p-value    
-s(zsd) 9.00 6.23    0.93  &lt;2e-16 ***
-s(oxy) 9.00 7.28    0.98    0.16    
+s(zsd) 9.00 5.93    0.92  &lt;2e-16 ***
+s(oxy) 9.00 7.96    0.99    0.27    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -860,8 +865,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>3 variables</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>mod_gam3 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy)<span class="sc">+</span><span class="fu">s</span>(zeu), <span class="at">data=</span>tdata)</span>
-<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>mod_gam3 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy)<span class="sc">+</span><span class="fu">s</span>(zeu), <span class="at">data=</span>tdata)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -872,30 +877,30 @@ ln_cpue ~ s(zsd) + s(oxy) + s(zeu)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004526   113.1   &lt;2e-16 ***
+(Intercept) 0.550784   0.005489   100.3   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
          edf Ref.df      F p-value    
-s(zsd) 5.500  6.745 15.940 &lt; 2e-16 ***
-s(oxy) 7.343  8.353 13.691 &lt; 2e-16 ***
-s(zeu) 7.162  8.233  2.672 0.00528 ** 
+s(zsd) 6.078  7.277 21.342 &lt; 2e-16 ***
+s(oxy) 7.920  8.705 17.914 &lt; 2e-16 ***
+s(zeu) 1.000  1.000  7.043 0.00798 ** 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0879   Deviance explained = 9.18%
-GCV = 0.097521  Scale est. = 0.097089  n = 4739</code></pre>
+R-sq.(adj) =   0.09   Deviance explained = 9.28%
+GCV = 0.14666  Scale est. = 0.14617   n = 4851</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 9 iterations.
-The RMS GCV score gradient at convergence was 6.444181e-07 .
+Smoothing parameter selection converged after 10 iterations.
+The RMS GCV score gradient at convergence was 4.236799e-08 .
 The Hessian was positive definite.
 Model rank =  28 / 28 
 
@@ -903,13 +908,13 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
          k'  edf k-index p-value    
-s(zsd) 9.00 5.50    0.93  &lt;2e-16 ***
-s(oxy) 9.00 7.34    0.98    0.12    
-s(zeu) 9.00 7.16    0.96  &lt;2e-16 ***
+s(zsd) 9.00 6.08    0.92  &lt;2e-16 ***
+s(oxy) 9.00 7.92    0.99    0.34    
+s(zeu) 9.00 1.00    0.95  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -922,8 +927,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>4 variables</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>mod_gam4 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy)<span class="sc">+</span><span class="fu">s</span>(zeu)<span class="sc">+</span><span class="fu">s</span>(sst), <span class="at">data=</span>tdata)</span>
-<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>mod_gam4 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy)<span class="sc">+</span><span class="fu">s</span>(zeu)<span class="sc">+</span><span class="fu">s</span>(sst), <span class="at">data=</span>tdata)</span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -934,31 +939,31 @@ ln_cpue ~ s(zsd) + s(oxy) + s(zeu) + s(sst)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004523   113.1   &lt;2e-16 ***
+(Intercept)  0.55078    0.00548   100.5   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
          edf Ref.df      F p-value    
-s(zsd) 5.461  6.706 15.172  &lt;2e-16 ***
-s(oxy) 7.384  8.382 13.148  &lt;2e-16 ***
-s(zeu) 7.222  8.278  2.948  0.0022 ** 
-s(sst) 4.788  5.914  1.573  0.1347    
+s(zsd) 6.127  7.328 18.544 &lt; 2e-16 ***
+s(oxy) 7.901  8.695 17.495 &lt; 2e-16 ***
+s(zeu) 1.000  1.000  6.919 0.00855 ** 
+s(sst) 5.719  6.919  2.677 0.01066 *  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0894   Deviance explained = 9.42%
-GCV = 0.09746  Scale est. = 0.096929  n = 4739</code></pre>
+R-sq.(adj) =  0.093   Deviance explained = 9.68%
+GCV = 0.14635  Scale est. = 0.14569   n = 4851</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 12 iterations.
-The RMS GCV score gradient at convergence was 8.407679e-07 .
+Smoothing parameter selection converged after 7 iterations.
+The RMS GCV score gradient at convergence was 7.681187e-07 .
 The Hessian was positive definite.
 Model rank =  37 / 37 
 
@@ -966,14 +971,14 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
          k'  edf k-index p-value    
-s(zsd) 9.00 5.46    0.93  &lt;2e-16 ***
-s(oxy) 9.00 7.38    0.98    0.12    
-s(zeu) 9.00 7.22    0.96  &lt;2e-16 ***
-s(sst) 9.00 4.79    0.99    0.20    
+s(zsd) 9.00 6.13    0.92  &lt;2e-16 ***
+s(oxy) 9.00 7.90    1.00    0.40    
+s(zeu) 9.00 1.00    0.96  &lt;2e-16 ***
+s(sst) 9.00 5.72    0.98    0.15    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -989,8 +994,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>5 variables</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>mod_gam5 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy)<span class="sc">+</span><span class="fu">s</span>(zeu)<span class="sc">+</span><span class="fu">s</span>(sst)<span class="sc">+</span><span class="fu">s</span>(sss), <span class="at">data=</span>tdata)</span>
-<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>mod_gam5 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy)<span class="sc">+</span><span class="fu">s</span>(zeu)<span class="sc">+</span><span class="fu">s</span>(sst)<span class="sc">+</span><span class="fu">s</span>(sss), <span class="at">data=</span>tdata)</span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -1001,24 +1006,24 @@ ln_cpue ~ s(zsd) + s(oxy) + s(zeu) + s(sst) + s(sss)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)   0.5117     0.0045   113.7   &lt;2e-16 ***
+(Intercept) 0.550784   0.005447   101.1   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
-         edf Ref.df      F p-value    
-s(zsd) 4.550  5.736 10.476 &lt; 2e-16 ***
-s(oxy) 7.345  8.356 15.117 &lt; 2e-16 ***
-s(zeu) 7.429  8.418  3.004 0.00246 ** 
-s(sst) 3.996  5.015  2.199 0.04964 *  
-s(sss) 7.764  8.614  6.431 &lt; 2e-16 ***
+         edf Ref.df      F  p-value    
+s(zsd) 5.633  6.843 11.819  &lt; 2e-16 ***
+s(oxy) 7.756  8.617 19.078  &lt; 2e-16 ***
+s(zeu) 1.000  1.000  1.145 0.284742    
+s(sst) 5.627  6.829  3.681 0.000855 ***
+s(sss) 7.337  8.341  7.953  &lt; 2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.0984   Deviance explained = 10.4%
-GCV = 0.096632  Scale est. = 0.095978  n = 4739</code></pre>
+R-sq.(adj) =  0.104   Deviance explained = 10.9%
+GCV = 0.14475  Scale est. = 0.14391   n = 4851</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1026,7 +1031,7 @@ GCV = 0.096632  Scale est. = 0.095978  n = 4739</code></pre>
 <pre><code>
 Method: GCV   Optimizer: magic
 Smoothing parameter selection converged after 12 iterations.
-The RMS GCV score gradient at convergence was 1.472457e-07 .
+The RMS GCV score gradient at convergence was 5.355257e-08 .
 The Hessian was positive definite.
 Model rank =  46 / 46 
 
@@ -1034,15 +1039,15 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
          k'  edf k-index p-value    
-s(zsd) 9.00 4.55    0.94  &lt;2e-16 ***
-s(oxy) 9.00 7.34    0.99    0.21    
-s(zeu) 9.00 7.43    0.96  &lt;2e-16 ***
-s(sst) 9.00 4.00    0.99    0.28    
-s(sss) 9.00 7.76    0.99    0.22    
+s(zsd) 9.00 5.63    0.93  &lt;2e-16 ***
+s(oxy) 9.00 7.76    1.00   0.375    
+s(zeu) 9.00 1.00    0.96   0.005 ** 
+s(sst) 9.00 5.63    0.98   0.105    
+s(sss) 9.00 7.34    0.97   0.035 *  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -1061,8 +1066,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>6 variables</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>mod_gam6 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy)<span class="sc">+</span><span class="fu">s</span>(zeu)<span class="sc">+</span><span class="fu">s</span>(sst)<span class="sc">+</span><span class="fu">s</span>(sss)<span class="sc">+</span><span class="fu">s</span>(ssh), <span class="at">data=</span>tdata)</span>
-<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>mod_gam6 <span class="ot">&lt;-</span><span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy)<span class="sc">+</span><span class="fu">s</span>(zeu)<span class="sc">+</span><span class="fu">s</span>(sst)<span class="sc">+</span><span class="fu">s</span>(sss)<span class="sc">+</span><span class="fu">s</span>(ssh), <span class="at">data=</span>tdata)</span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -1073,33 +1078,33 @@ ln_cpue ~ s(zsd) + s(oxy) + s(zeu) + s(sst) + s(sss) + s(ssh)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.511721   0.004495   113.8   &lt;2e-16 ***
+(Intercept) 0.550784   0.005444   101.2   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
-         edf Ref.df      F  p-value    
-s(zsd) 4.230  5.380 11.055  &lt; 2e-16 ***
-s(oxy) 7.257  8.293 14.436  &lt; 2e-16 ***
-s(zeu) 7.604  8.529  3.143 0.000973 ***
-s(sst) 4.253  5.313  2.565 0.019410 *  
-s(sss) 7.662  8.554  3.606 0.000209 ***
-s(ssh) 3.709  4.660  2.516 0.032770 *  
+         edf Ref.df      F p-value    
+s(zsd) 5.589  6.799 11.739 &lt; 2e-16 ***
+s(oxy) 7.694  8.581 18.506 &lt; 2e-16 ***
+s(zeu) 1.000  1.000  0.732 0.39224    
+s(sst) 5.665  6.868  3.975 0.00025 ***
+s(sss) 7.196  8.240  4.432 1.7e-05 ***
+s(ssh) 3.206  4.059  1.531 0.19255    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =    0.1   Deviance explained = 10.7%
-GCV = 0.096487  Scale est. = 0.09576   n = 4739</code></pre>
+R-sq.(adj) =  0.105   Deviance explained = 11.1%
+GCV = 0.1447  Scale est. = 0.14377   n = 4851</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Method: GCV   Optimizer: magic
-Smoothing parameter selection converged after 11 iterations.
-The RMS GCV score gradient at convergence was 1.877393e-07 .
+Smoothing parameter selection converged after 19 iterations.
+The RMS GCV score gradient at convergence was 3.545786e-08 .
 The Hessian was positive definite.
 Model rank =  55 / 55 
 
@@ -1107,16 +1112,16 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
          k'  edf k-index p-value    
-s(zsd) 9.00 4.23    0.93  &lt;2e-16 ***
-s(oxy) 9.00 7.26    0.99    0.28    
-s(zeu) 9.00 7.60    0.96    0.01 ** 
-s(sst) 9.00 4.25    0.99    0.27    
-s(sss) 9.00 7.66    0.99    0.26    
-s(ssh) 9.00 3.71    0.97    0.01 ** 
+s(zsd) 9.00 5.59    0.93  &lt;2e-16 ***
+s(oxy) 9.00 7.69    1.00    0.39    
+s(zeu) 9.00 1.00    0.96    0.01 ** 
+s(sst) 9.00 5.66    0.98    0.15    
+s(sss) 9.00 7.20    0.97    0.04 *  
+s(ssh) 9.00 3.21    0.96  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -1139,10 +1144,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Summery of multi variable GAM model fitting</p>
 <table class="table">
 <colgroup>
-<col style="width: 51%">
-<col style="width: 9%">
-<col style="width: 13%">
-<col style="width: 23%">
+<col style="width: 38%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1155,44 +1160,140 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <tbody>
 <tr class="odd">
 <td>ln(cpue) ~ s(zsd) +s(oxy)</td>
-<td>0.09776</td>
-<td>0.0844</td>
-<td>8.7</td>
+<td>0.146</td>
+<td>0.088</td>
+<td>9.14</td>
 </tr>
 <tr class="even">
 <td>ln(cpue) ~ s(zsd) +s(oxy) + s(zeu)</td>
-<td>0.0975</td>
-<td>0.0879</td>
-<td>9.18</td>
+<td>0.146</td>
+<td>0.09</td>
+<td>9.28</td>
 </tr>
 <tr class="odd">
 <td>ln(cpue) ~ s(zsd) +s(oxy)+ s(zeu)+ s(sst)</td>
-<td>0.0946</td>
-<td>0.0894</td>
-<td>9.42</td>
+<td>0.146</td>
+<td>0.093</td>
+<td>9.68</td>
 </tr>
 <tr class="even">
 <td>ln(cpue) ~ s(zsd) +s(oxy)+ s(zeu)+ s(sst)+s(sss)</td>
-<td>0.0966</td>
-<td>0.0984</td>
-<td>10.4</td>
+<td>0.144</td>
+<td>0.104</td>
+<td>10.9</td>
 </tr>
 <tr class="odd">
 <td>ln(cpue) ~ s(zsd) +s(oxy)+ s(zeu) + s(sst)+s(sss)</td>
-<td>0.0964</td>
-<td>0.1</td>
-<td>10.7</td>
+<td>0.144</td>
+<td>0.105</td>
+<td>11.1</td>
 </tr>
 </tbody>
 </table>
 <p>Spatio-temporal variation</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="co">#mod_gam7 &lt;- gam(ln_cpue ~ s(zsd)+s(oxy)+s(zeu)+s(sst)+s(sss)+s(ssh)+s(lon,lat),data=tdata)</span></span>
-<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a><span class="co">#summary(mod_gam7)</span></span>
-<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a><span class="co">#gam.check(mod_gam7)</span></span>
-<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(mod_gam7)</span></span>
-<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a><span class="co">#plot.gam(mod_gam7, scheme = 2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>mod_gam7 <span class="ot">&lt;-</span> <span class="fu">gam</span>(ln_cpue <span class="sc">~</span> <span class="fu">s</span>(zsd)<span class="sc">+</span><span class="fu">s</span>(oxy)<span class="sc">+</span><span class="fu">s</span>(zeu)<span class="sc">+</span><span class="fu">s</span>(sst)<span class="sc">+</span><span class="fu">s</span>(sss)<span class="sc">+</span><span class="fu">s</span>(ssh)<span class="sc">+</span><span class="fu">s</span>(lon,lat),<span class="at">data=</span>tdata)</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: gaussian 
+Link function: identity 
+
+Formula:
+ln_cpue ~ s(zsd) + s(oxy) + s(zeu) + s(sst) + s(sss) + s(ssh) + 
+    s(lon, lat)
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 0.550784   0.005227   105.4   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Approximate significance of smooth terms:
+              edf Ref.df      F  p-value    
+s(zsd)      3.303  4.270  7.881 1.87e-06 ***
+s(oxy)      6.252  7.467  5.756 1.72e-06 ***
+s(zeu)      1.000  1.000  5.359 0.020663 *  
+s(sst)      5.632  6.839  4.697 3.60e-05 ***
+s(sss)      1.000  1.000  3.274 0.070452 .  
+s(ssh)      1.000  1.000 11.051 0.000893 ***
+s(lon,lat) 26.005 28.424 16.569  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+R-sq.(adj) =  0.175   Deviance explained = 18.2%
+GCV = 0.13379  Scale est. = 0.13254   n = 4851</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(mod_gam7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Method: GCV   Optimizer: magic
+Smoothing parameter selection converged after 23 iterations.
+The RMS GCV score gradient at convergence was 2.165922e-08 .
+The Hessian was positive definite.
+Model rank =  84 / 84 
+
+Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+indicate that k is too low, especially if edf is close to k'.
+
+              k'   edf k-index p-value    
+s(zsd)      9.00  3.30    0.95  &lt;2e-16 ***
+s(oxy)      9.00  6.25    1.00    0.34    
+s(zeu)      9.00  1.00    0.97    0.03 *  
+s(sst)      9.00  5.63    0.99    0.21    
+s(sss)      9.00  1.00    0.98    0.12    
+s(ssh)      9.00  1.00    0.99    0.17    
+s(lon,lat) 29.00 26.01    0.94  &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam7)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-5.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-6.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-7.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-8.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.gam</span>(mod_gam7, <span class="at">scheme =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-9.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-10.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-11.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-12.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-13.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-14.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="GAM_YFT_AS_files/figure-html/unnamed-chunk-17-15.png" class="img-fluid" width="672"></p>
+</div>
 </div>
 </section>
 
