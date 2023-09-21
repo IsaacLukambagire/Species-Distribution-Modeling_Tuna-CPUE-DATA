@@ -1,0 +1,251 @@
+GAM for Yellowfin tuna
+
+Study area - Arabian sea
+
+Outliars of CPUE are removed and converted to natuaral log by after adding constant value (1). Data set is divide in to train and validation data by 70:30 ratio.
+
+```{r}
+require(dplyr)
+require(readr)
+require(here)
+library(mgcv)
+library(ggplot2)
+
+set.seed(123)
+
+here::i_am("individual_files/sudheera/GAM_YFT_AS.qmd")
+#dir_data <- here::here("Data/")
+
+#tdata <- read.csv("~/ihw23_proj_tuna/Data/train data final.csv")
+full_data <- read.csv("~/ihw23_proj_tuna/Data/2016_2019_fish_ocg_data_updated.csv")
+head(full_data)
+dim(full_data)
+# subset only arabian sea data
+tdata <- full_data[full_data$lon<= 70,]
+dim(tdata)
+
+
+
+#Remove outliars in cpue data
+
+remove_outliers <- function(x, na.rm = TRUE, ...) {
+  qnt <- quantile(x, probs=c(.25, .75), na.rm = na.rm, ...)
+  H <- 1.5 * IQR(x, na.rm = na.rm)
+  y <- x
+  y[x < (qnt[1] - H)] <- NA
+  y[x > (qnt[2] + H)] <- NA
+  y
+}
+
+tdata$mean_cpue <- remove_outliers(tdata$mean_cpue)
+dim(tdata)
+
+# remove NA values
+
+tdata <- na.omit(tdata)
+dim(tdata)
+
+# convert cpue to natural log
+
+tdata$ln_cpue <- log10(tdata$mean_cpue)
+
+# calculate EKE
+# EKE=1/2x(U²+V²)
+
+tdata$eke <- 0.5 *(((tdata$u)^2) + ((tdata$v)^2))
+
+```
+
+Apply ANOVA test
+
+```{r}
+names(tdata)
+# ANOVA for cpue (cpue ~sst, chl,ssh)
+
+fit1<- aov(ln_cpue~factor(sst), data=tdata)
+summary(fit1)
+
+fit2 <- aov(ln_cpue~factor(ssh), data=tdata)
+summary(fit2)
+
+fit3 <- aov(ln_cpue~factor(sss), data=tdata)
+summary(fit3)
+
+fit4 <- aov(ln_cpue~factor(mld), data=tdata)
+summary(fit4)
+
+fit5 <- aov(ln_cpue~factor(zeu), data=tdata)
+summary(fit5)
+
+fit6 <- aov(ln_cpue~factor(eke), data=tdata)
+summary(fit6)
+
+fit7 <- aov(ln_cpue~factor(oxy), data=tdata)
+summary(fit7)
+
+fit8 <- aov(ln_cpue~factor(chl), data=tdata)
+summary(fit8)
+```
+
+GAM
+
+```{r}
+
+mod_lm <- gam(ln_cpue ~ s(sst), data=tdata)
+summary(mod_lm)
+gam.check(mod_lm)
+plot(mod_lm)
+```
+
+```{r}
+mod_lm2 <-gam(ln_cpue ~ s(sss), data=tdata)
+summary(mod_lm2)
+gam.check(mod_lm2)
+plot(mod_lm2)
+
+```
+
+```{r}
+mod_lm3 <-gam(ln_cpue ~ s(ssh), data=tdata)
+summary(mod_lm3)
+gam.check(mod_lm3)
+plot(mod_lm3)
+
+```
+
+```{r}
+mod_lm4 <-gam(ln_cpue ~ s(chl), data=tdata)
+summary(mod_lm4)
+gam.check(mod_lm4)
+plot(mod_lm4)
+
+```
+
+```{r}
+mod_lm5 <-gam(ln_cpue ~ s(eke), data=tdata)
+summary(mod_lm5)
+gam.check(mod_lm5)
+plot(mod_lm5)
+
+```
+
+```{r}
+mod_lm6 <-gam(ln_cpue ~ s(oxy), data=tdata)
+summary(mod_lm6)
+gam.check(mod_lm6)
+plot(mod_lm6)
+
+```
+
+```{r}
+mod_lm7 <-gam(ln_cpue ~ s(zeu), data=tdata)
+summary(mod_lm7)
+gam.check(mod_lm7)
+plot(mod_lm7)
+
+```
+
+```{r}
+mod_lm8 <-gam(ln_cpue ~ s(zsd), data=tdata)
+summary(mod_lm8)
+gam.check(mod_lm8)
+plot(mod_lm8)
+```
+
+```{r}
+
+mod_lm9 <- gam(ln_cpue ~ s(mld), data=tdata)
+summary(mod_lm9)
+gam.check(mod_lm9)
+plot(mod_lm9)
+```
+
+Summery of the result
+
+| Variable                      | GCV     | R sq. (Adj) | \% Variance explaned |
+|-------------------------------|---------|-------------|----------------------|
+| ZSD (Secchi depth -Duran alg) | 0.0998  | 0.0637      | 6.47                 |
+| OXY (Oxygen at surface)       | 0.10143 | 0.0488      | 5.03                 |
+| ZEU (Euphotic depth)          | 0.10274 | 0.0366      | 3.82                 |
+| SST                           | 0.10358 | 0.0282      | 2.92                 |
+| SSS                           | 0.10378 | 0.103       | 2.88                 |
+| SSH                           | 0.10484 | 0.0166      | 1.786                |
+| CHL                           | 0.10484 | 0.0126      | 1.41                 |
+| MLD                           | 0.10596 | 0.00622     | 0.76                 |
+| EKE                           | 0.0998  | 0.10638     | 0.341                |
+
+## GAM with multiple variables
+
+2 variables (Secchi depth and Oxygen level)
+
+```{r}
+
+mod_gam1 <-gam(ln_cpue ~ s(zsd)+s(oxy), data=tdata)
+summary(mod_gam1)
+gam.check(mod_gam1)
+plot(mod_gam1)
+```
+
+3 variables
+
+```{r}
+
+mod_gam3 <-gam(ln_cpue ~ s(zsd)+s(oxy)+s(zeu), data=tdata)
+summary(mod_gam3)
+gam.check(mod_gam3)
+plot(mod_gam3)
+```
+
+4 variables
+
+```{r}
+
+mod_gam4 <-gam(ln_cpue ~ s(zsd)+s(oxy)+s(zeu)+s(sst), data=tdata)
+summary(mod_gam4)
+gam.check(mod_gam4)
+plot(mod_gam4)
+```
+
+5 variables
+
+```{r}
+
+mod_gam5 <-gam(ln_cpue ~ s(zsd)+s(oxy)+s(zeu)+s(sst)+s(sss), data=tdata)
+summary(mod_gam5)
+gam.check(mod_gam5)
+plot(mod_gam5)
+
+
+```
+
+6 variables
+
+```{r}
+
+mod_gam6 <-gam(ln_cpue ~ s(zsd)+s(oxy)+s(zeu)+s(sst)+s(sss)+s(ssh), data=tdata)
+summary(mod_gam6)
+gam.check(mod_gam6)
+plot(mod_gam6)
+
+```
+
+Summery of multi variable GAM model fitting
+
+| Model                                              | GCV     | R sq. (adj) | \% Variance explained |
+|-------------------------------|-------------|-------------|-------------|
+| ln(cpue) \~ s(zsd) +s(oxy)                         | 0.09776 | 0.0844      | 8.7                   |
+| ln(cpue) \~ s(zsd) +s(oxy) + s(zeu)                | 0.0975  | 0.0879      | 9.18                  |
+| ln(cpue) \~ s(zsd) +s(oxy)+ s(zeu)+ s(sst)         | 0.0946  | 0.0894      | 9.42                  |
+| ln(cpue) \~ s(zsd) +s(oxy)+ s(zeu)+ s(sst)+s(sss)  | 0.0966  | 0.0984      | 10.4                  |
+| ln(cpue) \~ s(zsd) +s(oxy)+ s(zeu) + s(sst)+s(sss) | 0.0964  | 0.1         | 10.7                  |
+
+Spatio-temporal variation
+
+```{r}
+#mod_gam7 <- gam(ln_cpue ~ s(zsd)+s(oxy)+s(zeu)+s(sst)+s(sss)+s(ssh)+s(lon,lat),data=tdata)
+#summary(mod_gam7)
+#gam.check(mod_gam7)
+
+#plot(mod_gam7)
+#plot.gam(mod_gam7, scheme = 2)
+```
