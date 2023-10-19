@@ -1,0 +1,351 @@
+here::i_am("sdm_tuna.R")
+library(readr)
+library(dplyr)
+library(gbm)
+library(ggplot2)
+library(caTools)
+library(mapview)
+
+#
+dir_data <- here::here()
+#YFT_data<- read.csv("2016_2019_fish_ocg_arabian_sea_full.csv")
+YFT_data<- read_csv("2016_2019_fish_ocg_data_updated.csv")
+
+#crop data to the arabian sea based on lon
+YFT_data1<-YFT_data[YFT_data$lon<=70,]
+str(YFT_data)
+
+YFT_data2<-data_frame(YFT_data1)
+
+#add projection to plot the points
+coordinates(YFT_data2) <- ~ lon + lat
+proj4string(YFT_data2) <- "epsg:4326"
+mapview(YFT_data2)
+
+#YFT_data<- read.csv("HSI.csv",header = T)
+str(YFT_data)
+head(YFT_data)
+
+hist(YFT_data1$mean_cpue)
+hist(log(YFT_data1$mean_cpue+1))
+#hist(ln(YFT_data$mcpue)+1)
+
+boxplot(log(YFT_data1$mean_cpue))
+
+head(YFT_data1)
+eke<-0.5*(YFT_data1$u^2+YFT_data1$v^2)
+
+YFT_data1$eke<-eke
+#summary(YFT_data1$eke)
+
+YFT_data1$ln_cpue<-ln(YFT_data1$mean_cpue+1)
+
+hist(YFT_data1$ln_cpue)
+
+YFT_data3<-YFT_data1%>%dplyr::select(c("ln_cpue","sss","mld","zsd","ssh","sst",
+                                      "zeu","oxy","chl","eke"))
+
+##remove outlier
+
+outlierReplace(YFT_data3, "ln_cpue", which(YFT_data3$ln_cpue> 1.5), NA)
+
+YFT_data3<-na.omit(YFT_data3)
+hist(YFT_data3$ln_cpue)
+summary(YFT_data3)
+
+#############plt histo cpue##########
+# Histogram bin width
+install.packages("ggplot2")
+library(ggplot2)
+ggplot(YFT_data3, aes(x = ln_cpue)) + 
+  geom_histogram(colour = 4, fill = "white", 
+                 binwidth = 0.1)
+
+#####correlation among variables
+#install.packages("Hmisc")
+library(Hmisc)
+library(ggcorrplot)
+
+flattenCorrMatrix <- function(cormat, pmat) {
+  ut <- upper.tri(cormat)
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut]
+  )
+}
+
+var.correlation<-rcorr(as.matrix (YFT_data3))
+var.correlation
+#a<-flattenCorrMatrix(var.correlation$r,var.correlation$P)
+#write.csv(var.correlation$P, 'var.correlation_p.csv')
+
+corr <- round(cor(YFT_data3),2)
+set.seed(124)
+corr.plot<-ggcorrplot(corr,tl.cex = 15,lab_size = 5, lab = T, digits = 2,legend.title = "Correlation",
+           type="lower",outline.col = "white")
+
+fil1 <- here::here("CMS data", "corr.plot.jpg")
+jpeg(file = fil1,res = 600,height = 7,width = 9,units = "in")
+corr.plot
+dev.off()
+
+###########data split######
+
+#split the rdata1 in to training data (70%) and validation data (30%)
+set.seed(123)
+split=sample.split(YFT_data3$ln_cpue,SplitRatio = 0.7)
+traindata<-subset(YFT_data3,split==TRUE)
+validata<-subset(YFT_data3,split==FALSE)
+
+#split with geo-tag
+set.seed(123)
+split=sample.split(YFT_data1$ln_cpue,SplitRatio = 0.7)
+traindata_geo<-subset(YFT_data1,split==TRUE)
+validata_geo<-subset(YFT_data1,split==FALSE)
+
+
+head(validata_geo)
+head(validata)
+traindata<-na.omit(traindata)
+summary(traindata)
+
+fil <- here::here("CMS data", "validata_geo.csv")
+write.csv(validata_geo, file = fil, row.names = FALSE)
+
+write.csv(validata_geo, "D:/conference and training/INCOIS training/Training/BRT/validata_geo.csv")
+###########RUN BRT###############
+traindata1 <- read_csv("CMS data/traindata1.csv")
+traindata1<-data.frame(traindata1)
+head(traindata1)
+
+set.seed(456)
+a12 <- gbm.step(data=traindata1, gbm.x = 2:10, gbm.y = 1,family = "gaussian", 
+               tree.complexity =7,learning.rate = 0.01, bag.fraction = 0.5)
+
+
+######model simplify to remove least important variables#########
+set.seed(456)
+a12.simply <- gbm.step(data=traindata1, gbm.x = c(2:4,6,8,9), gbm.y = 1,family = "gaussian", 
+                       tree.complexity =7,learning.rate = 0.01, bag.fraction = 0.5)
+a12.simply$contributions
+gbm.plot.fits(a12.simply)
+
+#########plots#######
+fil1 <- here::here("CMS data", "brt.vari.influence.jpg")
+jpeg(file = fil1,res = 600,height = 7,width = 9,units = "in")
+par(mfrow=c(3,3))
+gbm.plot(a12.simply,n.plots=6, smooth=TRUE)
+dev.off()
+
+par(mfrow=c(1,1))
+gbm.plot(a12.simply, variable.no=2,smooth=TRUE)
+
+#variable nos: 1=sss, 2=mld, 3=zsd,4=sst,5=oxy, 6=chl 
+
+gbm.perspec(a12.simply,6,3,z.range=c(0,0.8), x.label = "", 
+            y.label = "", z.label = "", cex.lab=1, cex.axis=1)
+
+
+#######validate##########
+validata1 <- read_csv("CMS data/validata1.csv")
+#(2:4,6,8,9)
+validata1<-data.frame(validata1)
+validata1.a12.simply<-validata1[,-c(1,5,7,10)]
+head(validata1)
+
+preds.a12.simply <- predict.gbm(a12.simply, validata1.a12.simply,
+                     n.trees=a12.simply$gbm.call$best.trees, type="response")
+
+rmse.brt <- sqrt(mean((validata1$ln_cpue - preds.a12.simply)^2))
+cat("Root Mean Squared Error (RMSE):", rmse, "\n")
+se.brt<-sd(validata1$ln_cpue - preds.a12.simply)
+
+
+cv.a12.simply<- train(ln_cpue~., 
+                      data= traindata1, method = "gbm",distribution="gaussian",
+                      bag.fraction= 0.5,
+                      trControl = trainControl(method = "cv",  number = 10, verboseIter = TRUE))
+cv.a12.simply$resample
+
+ffd<- train(ln_cpue~., data= traindata1, method = "gbm",distribution="gaussian",
+            bag.fraction= 0.5, 
+            trControl = trainControl(method = "cv",  number = 10, verboseIter = TRUE))
+
+mean(cv.a12.simply$resample$RMSE)
+mean(ffd$resample$RMSE)
+################
+traindata1<- data.frame(traindata)
+head(traindata1)
+
+tree_complexity_values <- c(2, 3, 4, 5, 6)
+learning_rate_values <- c(0.05, 0.01, 0.005, 0.001,0.0005)
+bag_fraction_values <- c(0.4, 0.5, 0.6, 0.7, 0.8)
+
+predictor_names <- colnames(traindata1)[2:10]  # Adjust predictor column names as needed
+response_name <- colnames(traindata1)[1]       # Adjust response column name as needed
+
+traindata1[,predictor_names, drop = FALSE]
+num_folds <- 10  # Adjust as needed
+
+best_rmse <- Inf
+best_params <- NULL
+cv_errors_res <- data.frame(params="tc lr bf", mean.cv=NA)
+
+for (tc in tree_complexity_values) {
+  for (lr in learning_rate_values) {
+    for (bf in bag_fraction_values) {
+      print(paste(tc, lr, bf))
+      # tc=tree_complexity_values[2]
+      # lr=learning_rate_values[2]
+      # bf=bag_fraction_values[2]
+      # Fit the model with the current hyperparameters
+      set.seed(123)
+      temp_model <- gbm.step(data = traindata1,
+                             gbm.x = predictor_names,
+                             gbm.y = response_name,
+                             family = "gaussian",
+                             tree.complexity = tc,
+                             learning.rate = lr,
+                             bag.fraction = bf,
+                             verbose = FALSE)
+      #cat(str(traindata1), "\n")
+      #cat(str(temp_model), "\n")
+      cat(names(temp_model),"\n")
+      
+      # Perform cross-validation and calculate RMSE
+      cv_results <- train(traindata1[,-1], temp_model$fit, method = "gbm", 
+                          trControl = trainControl(method = "cv", number = num_folds))
+      cv_error <- sqrt(cv_results$results$RMSE)  # RMSE is a typical evaluation metric for regression
+      cv_error_res <- rbind(cv_error_res, 
+                            data.frame(params=paste(tc, lr, bf), mean.cv=mean(cv_error)))
+      
+      # Check if this combination of hyperparameters is better
+      if (mean(cv_error) < best_rmse) {
+        best_rmse <- mean(cv_error)
+        best_params <- list(tree_complexity = tc, learning_rate = lr, bag_fraction = bf)
+      }
+    }
+  }
+}
+
+##############FR###########
+library(randomForest)
+library(dplyr)
+set.seed(123) 
+
+# Load your fisheries data (replace 'train_data.csv' and 'validate_data.csv' with your actual data files)
+train_data <- read.csv("~/SDM_TUNA/CMS data/traindata1.csv")
+validate_data <- read.csv("~/SDM_TUNA/CMS data/validata1.csv")
+head(validate_data)
+
+# Check the structure of your data
+str(train_data)
+
+head(validate_data)
+
+# Replace 'CPUE' with your actual response variable name
+set.seed(456)
+rf_model.500 <- randomForest(ln_cpue ~ ., data = train_data, ntree = 500)
+
+print(rf_model.500)
+
+#####model rf simplify######
+head(train_data)
+train_data.rf<-train_data[,-c(5,7,10)]
+set.seed(500)
+rf_model.500.simply <- randomForest(ln_cpue ~ ., data = train_data.rf, ntree = 500)
+
+mtry <- tuneRF(train_data.rf[-1],train_data.rf$ln_cpue, ntreeTry=500,
+               stepFactor=1.5,improve=0.01, trace=TRUE, plot=TRUE)
+best.m <- mtry[mtry[, 2] == min(mtry[, 2]), 1]
+print(mtry)
+print(best.m)
+
+set.seed(456)
+rf.500.simply <-randomForest(ln_cpue~.,data=train_data.rf, mtry=best.m, 
+                      importance=TRUE,ntree=500)
+print(rf.500.simply)
+
+
+#Evaluate variable importance
+importance(rf.500.simply)
+varImpPlot(rf.500.simply)
+
+# Make predictions on the validation data
+validate_data.rf<-validate_data[,-1]
+set.seed(123)
+preds.rf_model <- predict(rf.500, newdata = validate_data)
+
+rmse.rf <- sqrt(mean((validata1$ln_cpue - preds.rf_model)^2))
+cat("Root Mean Squared Error (RMSE):", rmse, "\n")
+
+
+
+plot(rf.500.simply)
+
+plot(rf.500.simply, log="y")
+
+#############CV##########
+set.seed(51)
+# Training using ‘random forest’ algorithm
+rf.cv.simply <- train(ln_cpue~., # Survived is a function of the variables we decided to include
+               data = train_data.rf, # Use the train data frame as the training data
+               method = 'rf',# Use the 'random forest' algorithm
+               trControl = trainControl(method = 'cv', # Use cross-validation
+                                        number = 10)) # Use 5 folds for cross-validation
+summary(rf.cv)
+rf.cv$resample
+
+###########plot######
+plot(rf.500.simply)
+#install.packages("pdp")
+library(pdp)
+library(ggplot2)
+library(cowplot)
+# Single Variable
+rf.par.oxy <- partial(rf.500.simply, pred.var = c("oxy"), chull = TRUE)
+plot.rf.par.oxy <- autoplot(rf.par.oxy, contour = TRUE)
+
+rf.par.sss <- partial(rf.500.simply, pred.var = c("sss"), chull = TRUE)
+plot.rf.par.sss <- autoplot(rf.par.sss, contour = TRUE)
+
+rf.par.chl <- partial(rf.500.simply, pred.var = c("chl"), chull = TRUE)
+plot.rf.par.chl <- autoplot(rf.par.chl, contour = TRUE)
+
+rf.par.zsd <- partial(rf.500.simply, pred.var = c("zsd"), chull = TRUE)
+plot.rf.par.zsd <- autoplot(rf.par.zsd, contour = TRUE)
+
+rf.par.sst <- partial(rf.500.simply, pred.var = c("sst"), chull = TRUE)
+plot.rf.par.sst <- autoplot(rf.par.sst, contour = TRUE)
+
+rf.par.mld <- partial(rf.500.simply, pred.var = c("mld"), chull = TRUE)
+plot.rf.par.mld <- autoplot(rf.par.mld, contour = TRUE)
+
+
+plot_grid(plot.rf.par.oxy,plot.rf.par.sss,plot.rf.par.chl,plot.rf.par.zsd,
+             plot.rf.par.sst,plot.rf.par.mld)
+
+rf.par.all.best2 <- partial(rf.500.simply, pred.var = c("oxy", "sss"), chull = TRUE)
+plot.rf.par.all.best2 <- autoplot(rf.par.all.best2, contour = TRUE, 
+                                  legend.title = "Partial\ndependence")
+
+rf.par.all.best3 <- partial(rf.500.simply, pred.var = c("oxy", "chl"), chull = TRUE)
+plot.rf.par.all.best3 <- autoplot(rf.par.all.best3, contour = TRUE, 
+                                  legend.title = "Partial\ndependence")
+#save plot
+fil1 <- here::here("CMS data", "rf_partial depended.jpg")
+jpeg(file = fil1,res = 600,height = 7,width = 9,units = "in")
+plot_grid(plot.rf.par.oxy,plot.rf.par.sss,plot.rf.par.chl,plot.rf.par.zsd,
+          plot.rf.par.sst,plot.rf.par.mld)
+dev.off()
+
+
+
+fil1 <- here::here("CMS data", "rf_partial_depended2.jpg")
+jpeg(file = fil1,res = 600,height = 7,width = 9,units = "in")
+autoplot(rf.par.all.best2, contour = TRUE, 
+         legend.title = "Partial\ndependence")
+dev.off()
+###########
